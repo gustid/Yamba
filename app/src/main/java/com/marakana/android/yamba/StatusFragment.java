@@ -1,11 +1,15 @@
 package com.marakana.android.yamba;
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +30,7 @@ public class StatusFragment extends Fragment implements OnClickListener{
     private Button buttonTweet;
     private TextView textCount;
     private int defaultTextColor;
+    SharedPreferences prefs;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -75,12 +80,30 @@ public class StatusFragment extends Fragment implements OnClickListener{
 
     private final class PostTask extends AsyncTask<String, Void,String>{
         @Override
-        protected String doInBackground(String... params){
-            YambaClient yambaClient = new YambaClient("student","password");
+        protected String doInBackground(String... params) {
+            /*YambaClient yambaClient = new YambaClient("student","password");
             try{
                 yambaClient.postStatus(params[0]);
                 return "Succesfully posted";
             }catch (YambaClientException e){
+                e.printStackTrace();
+                return "Failed to post yamba service";
+            }*/
+            try {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String username = prefs.getString("username", "");
+                String password = prefs.getString("password", "");
+
+                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+                    getActivity().startActivity(
+                            new Intent(getActivity(), SettingsActivity.class)
+                    );
+                    return "Please update your userame and password";
+                }
+                YambaClient cloud = new YambaClient(username, password,"http://yamba.newcircle.com/api");
+                cloud.postStatus(params[0]);
+                return "username " + username + " password " + password + " succesfully posted ";
+            } catch (YambaClientException e) {
                 e.printStackTrace();
                 return "Failed to post yamba service";
             }

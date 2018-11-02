@@ -32,8 +32,8 @@ public class StatusActivity extends AppCompatActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        //inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.status,menu);
+        //inflate the main; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main,menu);
         return true;
     }
 }
