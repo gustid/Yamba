@@ -1,9 +1,11 @@
 package com.marakana.android.yamba;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.util.Log;
@@ -34,6 +36,21 @@ public class StatusActivity extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu){
         //inflate the main; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                startService(new Intent(this,RefreshService.class));
+                break;
+            case R.id.itemPrefs:
+                startActivity(new Intent(this,SettingsActivity.class));
+                break;
+            default:
+                return  false;
+        }
         return true;
     }
 }

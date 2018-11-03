@@ -25,4 +25,10 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:orderInCategory="101"
         android:title="@string/purge" />
+
+    <item
+        android:id="@+id/itemPrefs"
+        android:orderInCategory="103"
+        android:title="@string/titlePrefs"
+        android:icon="@android:drawable/ic_menu_preferences"/>
 </menu>

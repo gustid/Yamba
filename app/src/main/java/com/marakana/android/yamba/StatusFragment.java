@@ -100,7 +100,7 @@ public class StatusFragment extends Fragment implements OnClickListener{
                     );
                     return "Please update your userame and password";
                 }
-                YambaClient cloud = new YambaClient(username, password,"http://yamba.newcircle.com/api");
+                YambaClient cloud = new YambaClient(username, password,"http://yamba.marakana.com/api");
                 cloud.postStatus(params[0]);
                 return "username " + username + " password " + password + " succesfully posted ";
             } catch (YambaClientException e) {

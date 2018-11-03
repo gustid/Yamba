@@ -11,4 +11,6 @@
     <string name="tweet">tweet</string>
     <string name="refresh">Refresh interval</string>
     <string name="purge">Purge</string>
+    <string name="titleRefresh">Title Refresh</string>
+    <string name="titlePrefs">Prefs</string>
 </resources>
