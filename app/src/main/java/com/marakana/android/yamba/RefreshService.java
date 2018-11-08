@@ -1,8 +1,11 @@
 package com.marakana.android.yamba;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,33 +48,31 @@ public class RefreshService extends IntentService{
             Toast.makeText(this,"Check username and password",Toast.LENGTH_LONG).show();
             return;
         }
-        System.out.println(username);
-        System.out.println(password);
+        //System.out.println(username);
+        //System.out.println(password);
         Log.d(TAG,"onStarted");
 
-        //YambaClient cloud = new YambaClient(username, password,"http://yamba.newcircle.com/api");
-        try {
-            //YambaClient cloud = new YambaClient(username, password,"http://yamba.newcircle.com/api");
-            Twitter cloud = new Twitter(username,password);
-            cloud.setAPIRootUrl("http://yamba.newcircle.com/api");
-            List<Twitter.Status> timeline = cloud.getPublicTimeline();
-            System.out.println(timeline.size());
-            for (Twitter.Status status : timeline){
-                Log.d(TAG,String.format("%s:%s", status.getUser(),status.getText()));
-            }
-        }catch (Exception e){
-            Log.e(TAG,"Failed to fetch timeline");
-            e.printStackTrace();
-        }
 
+        ContentValues values = new ContentValues();
+        YambaClient cloud = new YambaClient(username,password,"http://yamba.newcircle.com/api");
         try {
-            //YambaClient cloud = new YambaClient(username, password,"http://yamba.newcircle.com/api");
-            YambaClient cloud = new YambaClient(username,password,"http://yamba.newcircle.com/api");
-
+            int count = 0;
             List<Status> timeline = cloud.getTimeline(20);
-            System.out.println(timeline.size());
+
             for (Status status : timeline){
-                Log.d(TAG,String.format("%s:%s", status.getUser(),status.getMessage()));
+                values.clear();
+                values.put(StatusContract.Column.ID,status.getId());
+                values.put(StatusContract.Column.USER,status.getUser());
+                values.put(StatusContract.Column.MESSAGE,status.getMessage());
+                values.put(StatusContract.Column.CREATED_AT,status.getCreatedAt().getTime());
+                //db.insertWithOnConflict(StatusContract.TABLE,null,values,SQLiteDatabase.CONFLICT_IGNORE);
+                Uri uri = getContentResolver().insert(StatusContract.CONTENT_URI, values);
+                if(uri!=null){
+                    count++;
+                    Log.d(TAG,
+                            String.format("%s: %s",status.getUser(),status.getMessage()));
+                    System.out.println("user " + status.getUser() + " message "+ status.getMessage());
+                }
             }
         }catch (YambaClientException e){
             Log.e(TAG,"Failed to fetch timeline");
@@ -86,41 +87,3 @@ public class RefreshService extends IntentService{
         Log.d(TAG,"onDestroy");
     }
 }
-
-/*
-public class RefreshService extends Service {
-    static final String TAG = "RefreshService";
-
-    //used when we have binded services
-    //services that have a lifecycle which depends on the livecycle of creating activities
-    //not the case here
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    //a method that is called once
-    //when the service is created
-    @Override
-    public void onCreate(){
-        super.onCreate();
-        Log.d(TAG,"onCreate");
-    }
-
-    //called each time a service is needed
-    //doesn't call onCreate()
-    //doesn't call onDestroy()
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
-        super.onStartCommand(intent,flags,startId);
-        Log.d(TAG,"onStarted");
-        return START_STICKY;
-    }
-
-    //called once, when the service is destroyed
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        Log.d(TAG,"onDestroy");
-    }
-}*/
