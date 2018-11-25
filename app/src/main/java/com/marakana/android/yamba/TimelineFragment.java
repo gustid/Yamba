@@ -57,10 +57,9 @@ public class TimelineFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        setEmptyText("Loading data ...");
 
         adapter = new SimpleCursorAdapter(getActivity(),R.layout.list_item,null,
-                FROM, TO , CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                FROM, TO , 0);
         adapter.setViewBinder(VIEW_BINDER);
         setListAdapter(adapter);
         getLoaderManager().initLoader(LOADER_ID,null,this);
